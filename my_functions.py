@@ -1,4 +1,4 @@
-def col_info(data=None, col_ids=None):
+def col_info(data, col_ids=None, truncate=False):
     '''
     The function takes a dataset and a list of columns supplied by the user. If only a dataset is passed, the function will default to providing info on all the columns. The columns are specified as either all "labels" or all indices and can be in any desired order. Column indices can be passed using either a range function (for a contiguous list of columns) or a simple list (for non-contiguous columns). If "labels" are specified, these are converted into indices by the function before use.\
     \n\nEXAMPLES: Suppose the dataset has 10 columns labeled "A" to "J". \n\nSo for all columns use:
@@ -20,9 +20,12 @@ def col_info(data=None, col_ids=None):
         col_indices = col_ids
     print("The full dataset contains:", data.shape[0], "rows and", \
           data.shape[1], "columns. Details for the requested column(s)", \
-          "are as follows:\n")    
-    for col in col_indices: # for each index in the new list
-        uniques_arr = data.iloc[:,col].unique()	
+          "are as follows:\n")
+    col_indices_to_use = col_indices # col_indices_to_use will use all indices without truncate=True
+    if truncate == True:
+        col_indices_to_use = col_indices[:5] # set col_indices_to_use to first 5 column indices only
+    for col in col_indices_to_use: # for each index in the col_indices_to_use list
+        uniques_arr = data.iloc[:,col].unique()
         nb_uniques = len(data.iloc[:,col].unique())
         if nb_uniques < 2:
             print("\033[1m", data.columns[col], "\033[0m:", data.iloc[:,col].dtype, ":", nb_uniques, "level")
@@ -41,3 +44,5 @@ def col_info(data=None, col_ids=None):
                 break
         if ((total_length < 50) & (total_values < 12)):
             print(values_list, "\n")
+    if ((truncate == True) & (len(col_indices) > len(col_indices_to_use))):
+        print("... OUTPUT TRUNCATED ... remove truncate=True to display info about all columns")
