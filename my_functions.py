@@ -30,12 +30,14 @@ def col_info(data=None, col_ids=None):
             print("\033[1m", data.columns[col], "\033[0m:", data.iloc[:,col].dtype, ":", nb_uniques, "levels")
         values_list = []
         total_length = len(str(uniques_arr[0]))
+        total_values = 0
         for value in range(0, nb_uniques):
-            if total_length < 170:
+            if ((total_length < 50) & (total_values < 12)):
                 values_list.append(uniques_arr[value])
                 total_length += len(str(uniques_arr[value]))
+                total_values += 1
             else:
                 print(values_list, "...\n")
                 break
-        if total_length < 170:
+        if ((total_length < 50) & (total_values < 12)):
             print(values_list, "\n")
